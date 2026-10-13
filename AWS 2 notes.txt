@@ -340,6 +340,8 @@ Nginx sends API call to UI Proxy Authenticated via Keycloak.
 UI Proxy calls Content Service Fetch video from $3.
 Video streams via CloudFront User watches.
 Continue Learning Service stores resume point.
+
+AWS Notes completed
 Kafka sends event Progress Service updates user progress.
 -------------------------------------------------------------------------
 CloudFormation Stack:
