@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailSwift · train ticket booking</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f5f9ff 0%, #eef3fa 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .booking-container {
+      max-width: 1280px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -10px rgba(0, 20, 60, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+      padding: 2rem 2rem 2.5rem;
+      transition: all 0.2s ease;
+    }
+
+    /* Header */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      background: #0b2b5c;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 12px 18px -8px rgba(11, 43, 92, 0.3);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #0b2b5c;
+    }
+
+    .logo-text span {
+      color: #f9a826;
+      font-weight: 700;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .help-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1e2f50;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .help-badge i {
+      color: #f9a826;
+      font-size: 1.1rem;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #1e3a6b, #0b2b5c);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      box-shadow: 0 8px 14px -6px rgba(11, 43, 92, 0.3);
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    /* Main headline */
+    .headline {
+      margin-bottom: 1.8rem;
+    }
+
+    .headline h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0a1e3c;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .headline h1 i {
+      color: #f9a826;
+      font-size: 2rem;
+    }
+
+    .headline p {
+      color: #3f5370;
+      margin-top: 0.4rem;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+
+    /* Booking form card */
+    .booking-card {
+      background: white;
+      border-radius: 2rem;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 18px 35px -8px rgba(0, 20, 60, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.01);
+      margin-bottom: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) auto;
+      gap: 1.2rem;
+      align-items: end;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #3f5370;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .input-group label i {
+      color: #f9a826;
+      font-size: 0.9rem;
+      width: 18px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+      background: #f9fbfe;
+      border: 1.5px solid #e2e9f2;
+      border-radius: 16px;
+      padding: 0.2rem 1rem;
+      transition: all 0.2s;
+      height: 58px;
+    }
+
+    .input-wrapper:hover,
+    .input-wrapper:focus-within {
+      border-color: #f9a826;
+      background: white;
+      box-shadow: 0 6px 14px -6px rgba(249, 168, 38, 0.25);
+    }
+
+    .input-wrapper i {
+      color: #8499b4;
+      font-size: 1rem;
+      margin-right: 0.75rem;
+      transition: color 0.2s;
+    }
+
+    .input-wrapper:focus-within i {
+      color: #f9a826;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #0a1e3c;
+      outline: none;
+      padding: 0.9rem 0;
+      cursor: pointer;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #a7b8cf;
+      font-weight: 400;
+    }
+
+    .input-wrapper select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238499b4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0 center;
+      background-size: 16px;
+    }
+
+    .search-btn {
+      background: #0b2b5c;
+      color: white;
+      border: none;
+      border-radius: 18px;
+      height: 58px;
+      padding: 0 2.2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 14px 22px -10px rgba(11, 43, 92, 0.4);
+      white-space: nowrap;
+    }
+
+    .search-btn i {
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .search-btn:hover {
+      background: #123f7a;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 28px -12px #0b2b5c;
+    }
+
+    .search-btn:hover i {
+      transform: scale(1.1);
+    }
+
+    .search-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 8px 16px -8px #0b2b5c;
+    }
+
+    /* swap icon between from & to */
+    .swap-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f5fd;
+      border-radius: 30px;
+      width: 36px;
+      height: 36px;
+      margin: 0 auto;
+      color: #0b2b5c;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #d8e2f0;
+      align-self: center;
+      margin-top: 1.8rem;
+    }
+
+    .swap-icon:hover {
+      background: #f9a826;
+      color: white;
+      border-color: #f9a826;
+    }
+
+    /* extra options row */
+    .extra-options {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.8rem;
+      margin-top: 1.5rem;
+      padding-top: 1.2rem;
+      border-top: 1.5px dashed #dbe4f0;
+    }
+
+    .extra-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1e2f50;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .extra-option i {
+      color: #f9a826;
+      font-size: 1rem;
+      width: 18px;
+    }
+
+    .extra-option input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #f9a826;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* recent / popular routes */
+    .popular-routes {
+      margin-top: 2.2rem;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-title h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0a1e3c;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-title h3 i {
+      color: #f9a826;
+    }
+
+    .section-title a {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0b2b5c;
+      background: #edf3fc;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+
+    .section-title a:hover {
+      background: #f9a826;
+      color: #0a1e3c;
+    }
+
+    .route-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .chip {
+      background: white;
+      border: 1.5px solid #e2e9f2;
+      padding: 0.7rem 1.4rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1e2f50;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s;
+      cursor: default;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+    }
+
+    .chip i {
+      color: #f9a826;
+      font-size: 0.8rem;
+    }
+
+    .chip:hover {
+      border-color: #f9a826;
+      background: #fffcf5;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 14px -8px rgba(249, 168, 38, 0.3);
+    }
+
+    /* trust badges */
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      padding-top: 0.5rem;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #476085;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .badge i {
+      color: #f9a826;
+      font-size: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+      }
+      .search-btn {
+        grid-column: span 2;
+        justify-content: center;
+      }
+      .swap-icon {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .booking-container {
+        padding: 1.5rem;
+      }
+      .booking-card {
+        padding: 1.5rem;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .search-btn {
+        grid-column: span 1;
+      }
+      .logo-text {
+        font-size: 1.5rem;
+      }
+      .help-badge span {
+        display: none;
+      }
+      .help-badge {
+        padding: 0.6rem;
+      }
+      .headline h1 {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .user-profile {
+        align-self: flex-end;
+      }
+    }
+
+    /* subtle animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .booking-card, .popular-routes, .headline {
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .booking-card {
+      animation-delay: 0.05s;
+    }
+    .popular-routes {
+      animation-delay: 0.1s;
+    }
+  </style>
+</head>
+<body>
+  <div class="booking-container">
+    <!-- header -->
+    <header class="brand-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fas fa-train"></i>
+        </div>
+        <div class="logo-text">Rail<span>Swift</span></div>
+      </div>
+      <div class="user-profile">
+        <div class="help-badge">
+          <i class="fas fa-headset"></i>
+          <span>24/7 support</span>
+        </div>
+        <div class="avatar">
+          <i class="fas fa-user"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- headline -->
+    <div class="headline">
+      <h1>
+        <i class="fas fa-ticket-alt"></i> Book your train journey
+      </h1>
+      <p>Fast, secure, and best price – find your perfect ride.</p>
+    </div>
+
+    <!-- booking card (form) -->
+    <div class="booking-card">
+      <div class="form-grid">
+        <!-- FROM -->
+        <div class="input-group">
+          <label><i class="fas fa-circle"></i> From</label>
+          <div class="input-wrapper">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" placeholder="City or station" value="New York" list="cities">
+            <datalist id="cities">
+              <option>New York</option>
+              <option>Washington</option>
+              <option>Boston</option>
+              <option>Chicago</option>
+              <option>Los Angeles</option>
+            </datalist>
+          </div>
+        </div>
+
+        <!-- TO -->
+        <div class="input-group">
+          <label><i class="fas fa-flag-checkered"></i> To</label>
+          <div class="input-wrapper">
+            <i class="fas fa-location-dot"></i>
+            <input type="text" placeholder="City or station" value="Washington" list="cities">
+          </div>
+        </div>
+
+        <!-- DATE -->
+        <div class="input-group">
+          <label><i class="fas fa-calendar-day"></i> Departure</label>
+          <div class="input-wrapper">
+            <i class="fas fa-calendar-alt"></i>
+            <input type="date" value="2025-06-15">
+          </div>
+        </div>
+
+        <!-- PASSENGERS -->
+        <div class="input-group">
+          <label><i class="fas fa-users"></i> Passengers</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user-group"></i>
+            <select>
+              <option>1 adult</option>
+              <option selected>2 adults</option>
+              <option>3 adults</option>
+              <option>1 adult + 1 child</option>
+              <option>2 adults + 1 child</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SEARCH BUTTON -->
+        <button class="search-btn" type="button">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+
+      <!-- swap icon (visual only / UI friendly) -->
+      <div class="swap-icon" title="Swap stations">
+        <i class="fas fa-arrow-right-arrow-left"></i>
+      </div>
+
+      <!-- extra options: class & flexi -->
+      <div class="extra-options">
+        <label class="extra-option">
+          <input type="checkbox" checked> <i class="fas fa-couch"></i> First class
+        </label>
+        <label class="extra-option">
+          <input type="checkbox"> <i class="fas fa-wheelchair"></i> Accessible
+        </label>
+        <label class="extra-option">
+          <input type="checkbox"> <i class="fas fa-bicycle"></i> Bike space
+        </label>
+        <label class="extra-option">
+          <input type="checkbox"> <i class="fas fa-leaf"></i> Flexible ticket
+        </label>
+      </div>
+    </div>
+
+    <!-- popular routes / quick picks -->
+    <div class="popular-routes">
+      <div class="section-title">
+        <h3><i class="fas fa-fire"></i> Popular routes</h3>
+        <a href="#">View all <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="route-chips">
+        <div class="chip"><i class="fas fa-train"></i> NY → Washington</div>
+        <div class="chip"><i class="fas fa-train"></i> Boston → NYC</div>
+        <div class="chip"><i class="fas fa-train"></i> Chicago → Detroit</div>
+        <div class="chip"><i class="fas fa-train"></i> LA → San Diego</div>
+        <div class="chip"><i class="fas fa-train"></i> Seattle → Portland</div>
+      </div>
+    </div>
+
+    <!-- trust badges -->
+    <div class="trust-badges">
+      <div class="badge"><i class="fas fa-shield-alt"></i> Secure payment</div>
+      <div class="badge"><i class="fas fa-bolt"></i> Instant e-ticket</div>
+      <div class="badge"><i class="fas fa-undo-alt"></i> Free cancellation</div>
+      <div class="badge"><i class="fas fa-star"></i> 4.9 · 12k reviews</div>
+    </div>
+  </div>
+</body>
+</html>
